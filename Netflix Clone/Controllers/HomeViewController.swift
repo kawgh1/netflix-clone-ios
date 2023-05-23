@@ -7,9 +7,18 @@
 
 import UIKit
 
+enum Sections: Int {
+    case TrendingMovies = 0
+    case TrendingTv = 1
+    case PopularMovies = 2
+    case UpcomingMovies = 3
+    case TopRatedMovies = 4
+    
+}
+
 class HomeViewController: UIViewController {
     
-    let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending Series", "Upcoming Movies", "Top Rated"]
+    let sectionTitles: [String] = ["Trending Movies",  "Trending Tv", "Popular", "Upcoming Movies", "Top Rated"]
     
     private let homeFeedTable: UITableView = {
         
@@ -32,9 +41,7 @@ class HomeViewController: UIViewController {
         
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0,y:0, width: view.bounds.width, height: 500))
         homeFeedTable.tableHeaderView = headerView
-        
-        getTrendingMovies()
-        
+                
     }
     
     private func configureNavbar() {
@@ -55,21 +62,6 @@ class HomeViewController: UIViewController {
         homeFeedTable.frame = view.bounds
     }
     
-    private func getTrendingMovies() {
-        APICaller.shared.getTrendingMovies { results in
-            
-            switch results {
-                
-            case .success(let movies):
-                print(movies)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-
-
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -88,6 +80,55 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
+        switch indexPath.section {
+            case Sections.TrendingMovies.rawValue:
+                APICaller.shared.getTrendingMovies { result in
+                    switch result {
+                    case .success(let titles):
+                        cell.configure(with: titles)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            case Sections.TrendingTv.rawValue:
+                APICaller.shared.getTrendingTv { result in
+                    switch result {
+                    case .success(let titles):
+                        cell.configure(with: titles)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            case Sections.PopularMovies.rawValue:
+                APICaller.shared.getPopularMovies { result in
+                    switch result {
+                    case .success(let titles):
+                        cell.configure(with: titles)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            case Sections.UpcomingMovies.rawValue:
+                APICaller.shared.getUpcomingMovies { result in
+                    switch result {
+                    case .success(let titles):
+                        cell.configure(with: titles)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            case Sections.TopRatedMovies.rawValue:
+                APICaller.shared.getTopRatedMovies { result in
+                    switch result {
+                    case .success(let titles):
+                        cell.configure(with: titles)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            default:
+                return UITableViewCell()
+            }
         return cell
     }
     
@@ -108,7 +149,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         header.textLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         header.textLabel?.frame = CGRect(x: header.bounds.origin.x + 20, y: header.bounds.origin.y + 20, width: 100, height: header.bounds.height)
         header.textLabel?.textColor = .white
-        header.textLabel?.text = header.textLabel?.text?.capitalized
+        
+        let headerTitle = header.textLabel?.text?.capitalizeAbbreviations(str: (header.textLabel?.text)!)
+        header.textLabel?.text = headerTitle
     }
     
     // custom Navbar behavior - navbar disappears when scroll down, sticks to the top when pull down
