@@ -6,3 +6,4 @@ Netflix App Clone for iOS
 - ### Tools
   - The Movie Database [TMDB](https://www.themoviedb.org/?language=en-US)
   - SDWebImage installed via SPM - https://github.com/SDWebImage/SDWebImage
+  - Youtube Data API v3 - https://developers.google.com/youtube/v3
