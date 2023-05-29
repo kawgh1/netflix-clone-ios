@@ -18,8 +18,8 @@ enum APIError: Error {
 class APICaller {
     static let shared = APICaller()
     
-
-// MARK: GET Trending Movies
+    
+    // MARK: GET Trending Movies
     
     
     func getTrendingMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
@@ -32,7 +32,7 @@ class APICaller {
             }
             
             do {
-//                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
                 let results = try JSONDecoder().decode(TitleResponse.self, from:data)
                 print("Trending Movies:")
                 completion(.success(results.results))
@@ -44,7 +44,7 @@ class APICaller {
         task.resume()
     }
     
-// MARK: GET Trending TV
+    // MARK: GET Trending TV
     
     func getTrendingTv(completion: @escaping (Result<[Title], Error>) -> Void) {
         guard let url = URL(string: "\(Constants.baseURL)/3/trending/tv/day?api_key=\(Constants.API_KEY)") else {return}
@@ -56,7 +56,7 @@ class APICaller {
             }
             
             do {
-//                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
                 let results = try JSONDecoder().decode(TitleResponse.self, from:data)
                 print("Trending TV:")
                 completion(.success(results.results))
@@ -69,10 +69,12 @@ class APICaller {
     }
     
     
-// MARK: GET Upcoming Movies
-
+    // MARK: GET Coming Soon Movies
     
-    func getUpcomingMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
+    
+    func getComingSoonMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
+
+        
         guard let url = URL(string: "\(Constants.baseURL)/3/movie/upcoming?api_key=\(Constants.API_KEY)&language=en-US&page=1") else {return}
         
         let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
@@ -82,7 +84,7 @@ class APICaller {
             }
             
             do {
-//                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
                 let results = try JSONDecoder().decode(TitleResponse.self, from:data)
                 print("Upcoming Movies:")
                 completion(.success(results.results))
@@ -95,56 +97,56 @@ class APICaller {
     }
     
     
-// MARK: GET Popular Movies
-
+    // MARK: GET Popular Movies
+    
+    
+    func getPopularMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/popular?api_key=\(Constants.API_KEY)&language=en-US&page=1") else {return}
         
-        func getPopularMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
-            guard let url = URL(string: "\(Constants.baseURL)/3/movie/popular?api_key=\(Constants.API_KEY)&language=en-US&page=1") else {return}
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
             
-            let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
-                
-                guard let data = data, error == nil else {
-                    return
-                }
-                
-                do {
-    //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-                    let results = try JSONDecoder().decode(TitleResponse.self, from:data)
-                    print("Popular Movies:")
-                    completion(.success(results.results))
-                } catch {
-                    print("Error getting Popular Movies:")
-                    completion(.failure(APIError.failedToGetData))
-                }
+            guard let data = data, error == nil else {
+                return
             }
-            task.resume()
+            
+            do {
+                //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                let results = try JSONDecoder().decode(TitleResponse.self, from:data)
+                print("Popular Movies:")
+                completion(.success(results.results))
+            } catch {
+                print("Error getting Popular Movies:")
+                completion(.failure(APIError.failedToGetData))
+            }
         }
+        task.resume()
+    }
     
     
-// MARK: GET Top Rated Movies
-
+    // MARK: GET Top Rated Movies
+    
+    
+    func getTopRatedMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/top_rated?api_key=\(Constants.API_KEY)&language=en-US&page=1") else {return}
+        
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
             
-        func getTopRatedMovies(completion: @escaping (Result<[Title], Error>) -> Void) {
-            guard let url = URL(string: "\(Constants.baseURL)/3/movie/top_rated?api_key=\(Constants.API_KEY)&language=en-US&page=1") else {return}
-            
-            let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
-                
-                guard let data = data, error == nil else {
-                    return
-                }
-                
-                do {
-    //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-                    let results = try JSONDecoder().decode(TitleResponse.self, from:data)
-                    print("Top Rated Movies:")
-                    completion(.success(results.results))
-                } catch {
-                    print("Error getting Top Rated Movies:")
-                    completion(.failure(APIError.failedToGetData))
-                }
+            guard let data = data, error == nil else {
+                return
             }
-            task.resume()
+            
+            do {
+                //                let results = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+                let results = try JSONDecoder().decode(TitleResponse.self, from:data)
+                print("Top Rated Movies:")
+                completion(.success(results.results))
+            } catch {
+                print("Error getting Top Rated Movies:")
+                completion(.failure(APIError.failedToGetData))
+            }
         }
+        task.resume()
+    }
     
     // MARK: Get Discover Movies
     
@@ -169,6 +171,8 @@ class APICaller {
         task.resume()
     }
     
+    // MARK: GET Search Movies
+    
     func search(with query: String, completion: @escaping (Result<[Title], Error>) -> Void) {
         
         // format query
@@ -191,5 +195,33 @@ class APICaller {
         }
         task.resume()
     }
+    
+    
+    // MARK: YOUTUBE API SEARCH
+    
+    func getYoutubeMovieTrailer(with query: String, completion: @escaping (Result<VideoElement, Error>) -> Void) {
+        
+        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {return}
+        guard let url = URL(string: "\(Constants.YoutubeBaseUrl)q=\(query)&key=\(Constants.YoutubeAPI_Key)") else {return}
+        
+        
+        let task = URLSession.shared.dataTask(with: URLRequest(url: url)) { data, _, error in
+            guard let data = data, error == nil else {
+                return
+                
+            }
+            
+            
+            do {
+                let results = try JSONDecoder().decode(YoutubeSearchResponse.self, from: data)
+                completion(.success(results.items[0]))
+            } catch {
+                completion(.failure(error))
+                print(error.localizedDescription)
+            }
+            
+        }
+        task.resume()
+    }
 }
-
+    
