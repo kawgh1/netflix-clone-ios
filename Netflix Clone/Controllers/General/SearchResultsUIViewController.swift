@@ -35,6 +35,11 @@ class SearchResultsUIViewController: UIViewController {
         view.backgroundColor = .systemBackground
         view.addSubview(searchResultsCollectionView)
         
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        
+        navigationController?.navigationBar.tintColor = .white
+        
         searchResultsCollectionView.delegate = self
         searchResultsCollectionView.dataSource = self
 
